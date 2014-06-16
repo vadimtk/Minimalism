@@ -811,48 +811,21 @@ cubism_contextPrototype.horizon = function() {
         canvas.clearRect(i0, 0, width - i0, height);
 
         // record whether there are negative values to display
-        var negative;
 
         // positive bands
-        for (var j = 0; j < m; ++j) {
-          canvas.fillStyle = colors_[m + j];
+          canvas.fillStyle = colors_[1];
 
           // Adjust the range based on the current band index.
-          var y0 = (j - m + 1) * height;
-          scale.range([m * height + y0, y0]);
+          var y0 = 0;
+          scale.range([ height , y0]);
           y0 = scale(0);
 
           for (var i = i0, n = width, y1; i < n; ++i) {
             y1 = metric_.valueAt(i);
-            if (y1 <= 0) { negative = true; continue; }
+            if (y1 <= 0) {  continue; }
             if (y1 === undefined) continue;
             canvas.fillRect(i, y1 = scale(y1), 1, y0 - y1);
           }
-        }
-
-        if (negative) {
-          // enable offset mode
-          if (mode === "offset") {
-            canvas.translate(0, height);
-            canvas.scale(1, -1);
-          }
-
-          // negative bands
-          for (var j = 0; j < m; ++j) {
-            canvas.fillStyle = colors_[m - 1 - j];
-
-            // Adjust the range based on the current band index.
-            var y0 = (j - m + 1) * height;
-            scale.range([m * height + y0, y0]);
-            y0 = scale(0);
-
-            for (var i = i0, n = width, y1; i < n; ++i) {
-              y1 = metric_.valueAt(i);
-              if (y1 >= 0) continue;
-              canvas.fillRect(i, scale(-y1), 1, y0 - scale(-y1));
-            }
-          }
-        }
 
         canvas.restore();
       }
